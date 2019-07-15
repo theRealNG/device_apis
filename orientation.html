@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>Device Orientation</title>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script>
+			$(function() {
+				var socket = io();
+				socket.emit('mobile connected');
+				var betaSpan = document.querySelector('.beta');
+				var gammaSpan = document.querySelector('.gamma');
+				var alphaSpan = document.querySelector('.alpha');
+				var xResultSpan = document.querySelector('.x-result');
+
+				function handleOrientation(event){
+					alphaSpan.innerHTML = "Z-axis: " + event.alpha;
+					betaSpan.innerHTML = "X-axis: " + event.beta;
+					gammaSpan.innerHTML = "Y-axis: " + event.gamma;
+
+					if(event.beta > 75 && event.beta < 105){
+						xResultSpan.innerHTML = "Phone is Vertical";
+					} else{
+						xResultSpan.innerHTML = "Phone is not Vertical";
+					}
+				}
+
+				window.addEventListener("deviceorientation", handleOrientation);
+			});
+		</script>
+	</head>
+	<body>
+		<h1>Detecting Orientation</h1>
+		<span class="alpha">Alpha Value: </span></br>
+		<span class="beta">Beta Value: </span></br>
+		<span class="gamma">Gamma Value: </span></br>
+		<span class="x-result"></span></br>
+	</body>
+</html>

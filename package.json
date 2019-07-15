@@ -1,0 +1,10 @@
+{
+	"name": "device-motion",
+	"version": "0.0.1",
+	"description": "Detecting device motion",
+	"dependencies": {
+		"express": "^4.17.1",
+		"express-force-ssl": "^0.3.2",
+		"socket.io": "^2.2.0"
+	}
+}
