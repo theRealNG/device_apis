@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>Device Motion</title>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script>
+			$(function() {
+				var socket = io();
+				var xSpan = document.querySelector('.x-axis');
+				var ySpan = document.querySelector('.y-axis');
+				var zSpan = document.querySelector('.z-axis');
+				var distanceSpan = document.querySelector('.distance');
+				var distanceXSpan = document.querySelector('.distance_x');
+				var distanceYSpan = document.querySelector('.distance_y');
+				var intervalSpan = document.querySelector('.interval');
+				var distance = 0;
+				var initial_velocity = 0;
+				var initial_velocity_x = 0;
+				var initial_velocity_y = 0;
+
+				function calculate_distance(initial_velocity, acceleration, time){
+					return initial_velocity * time + ( 0.5 * acceleration * Math.pow(time, 2));
+				}
+
+				function handleMotion(event){
+					var interval_secs = event.interval/1000;
+					var acceleration_x = (event.acceleration.x);
+					var acceleration_y = (event.acceleration.y);
+					var distance_x = 0;
+					var distance_y = 0;
+
+					xSpan.innerHTML = acceleration_x + " m/s<sup>2</sup>";
+					ySpan.innerHTML = acceleration_y + " m/s<sup>2</sup>";
+					zSpan.innerHTML = event.acceleration.z;
+					//intervalSpan.innerHTML = interval_secs + " sec";
+
+					if(acceleration_x >= 0.05 && acceleration_y >= 0.05){
+						distance_x = calculate_distance(initial_velocity_x, acceleration_x, interval_secs);
+						distance_y = calculate_distance(initial_velocity_y, acceleration_y, interval_secs);
+
+						distanceXSpan.innerHTML = "Distance X: " + distance_x;
+						distanceYSpan.innerHTML = "Distance Y: " + distance_y;
+						distance += Math.pow(Math.pow(distance_x,2) + Math.pow(distance_y,2), 1/2);
+						distanceSpan.innerHTML = "Distance: " + Math.round(distance  * 100) + " cm";
+
+						// setting final velocity as initial velocity for next interval
+						initial_velocity_x = initial_velocity_x + acceleration_x * interval_secs;
+						initial_velocity_y = initial_velocity_y + acceleration_y * interval_secs;
+					}
+				}
+
+				window.addEventListener("devicemotion", handleMotion);
+			});
+		</script>
+	</head>
+	<body>
+		<h1>Detecting Motion</h1>
+		<span class="x-axis">X-axis acceleration: </span></br>
+		<span class="y-axis">Y-axis acceleration: </span></br>
+		<span class="z-axis">Z-axis acceleration: </span></br>
+		<span class="interval">Interval: </span></br>
+		<span class="distance">Distance </span></br>
+		<span class="distance_x">Distance </span></br>
+		<span class="distance_y">Distance </span></br>
+	</body>
+</html>
